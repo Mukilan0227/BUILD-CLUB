@@ -3,109 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Relay Control</title>
+  <title>Relay Control Panel</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
       text-align: center;
-      background-color: #121212;
-      color: white;
-      margin: 0;
-      padding: 2em;
+      padding: 20px;
     }
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1em;
-      max-width: 600px;
-      margin: auto;
+    h1 {
+      margin-bottom: 20px;
     }
-    button {
-      width: 100%;
-      padding: 1em;
-      font-size: 1.2em;
+    .device {
+      margin: 20px 0;
+    }
+    .btn {
+      padding: 12px 20px;
+      margin: 10px;
+      font-size: 18px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      transition: 0.3s;
     }
-    .on { background-color: #00e676; color: #000; }
-    .off { background-color: #ff1744; color: #fff; }
-    .dark-toggle {
-      margin-top: 1em;
-      padding: 0.5em;
-      background: #333;
-      color: white;
-      border: 1px solid white;
-      border-radius: 5px;
-    }
+    .on { background-color: #4CAF50; color: white; }
+    .off { background-color: #f44336; color: white; }
+    .btn:hover { transform: scale(1.05); }
   </style>
 </head>
 <body>
-  <h2>ESP32 IoT + IR Remote Control</h2>
-  <div class="container">
-    <div>
-      <button class="on" onclick="update('light','on')">Light ON</button>
-      <button class="off" onclick="update('light','off')">Light OFF</button>
-    </div>
-    <div>
-      <button class="on" onclick="update('fan','on')">Fan ON</button>
-      <button class="off" onclick="update('fan','off')">Fan OFF</button>
-    </div>
-    <div>
-      <button class="on" onclick="update('motor','on')">Motor ON</button>
-      <button class="off" onclick="update('motor','off')">Motor OFF</button>
-    </div>
-    <div>
-      <button class="on" onclick="update('tv','on')">TV ON</button>
-      <button class="off" onclick="update('tv','off')">TV OFF</button>
-    </div>
+  <h1>ESP32 Internet Relay Control</h1>
+
+  <div class="device">
+    <h3>LIGHT</h3>
+    <button class="btn on" onclick="updateText('LIGHT=ON')">ON</button>
+    <button class="btn off" onclick="updateText('LIGHT=OFF')">OFF</button>
   </div>
 
-  <button class="dark-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
+  <div class="device">
+    <h3>FAN</h3>
+    <button class="btn on" onclick="updateText('FAN=ON')">ON</button>
+    <button class="btn off" onclick="updateText('FAN=OFF')">OFF</button>
+  </div>
+
+  <div class="device">
+    <h3>MOTOR</h3>
+    <button class="btn on" onclick="updateText('MOTOR=ON')">ON</button>
+    <button class="btn off" onclick="updateText('MOTOR=OFF')">OFF</button>
+  </div>
+
+  <div class="device">
+    <h3>TV</h3>
+    <button class="btn on" onclick="updateText('TV=ON')">ON</button>
+    <button class="btn off" onclick="updateText('TV=OFF')">OFF</button>
+  </div>
 
   <script>
-    const repo = "mukilan0227/RSA";
-    const file = "relay.txt";
-
-    function update(device, state) {
-      fetch(`https://api.github.com/repos/${repo}/contents/${file}`, {
-        headers: {
-          Accept: "application/vnd.github.v3+json"
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        const content = atob(data.content);
-        const lines = content.split("\n").map(line => {
-          if (line.startsWith(device + "=")) return `${device}=${state}`;
-          return line;
-        });
-        const updated = btoa(lines.join("\n"));
-
-        fetch(`https://api.github.com/repos/${repo}/contents/${file}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "token YOUR_GITHUB_TOKEN"
-          },
-          body: JSON.stringify({
-            message: `Update ${device} to ${state}`,
-            content: updated,
-            sha: data.sha
-          })
-        }).then(() => alert(`${device} turned ${state.toUpperCase()}`));
-      });
-    }
-
-    function toggleTheme() {
-      document.body.classList.toggle("light");
-      if (document.body.classList.contains("light")) {
-        document.body.style.backgroundColor = "#fff";
-        document.body.style.color = "#000";
-      } else {
-        document.body.style.backgroundColor = "#121212";
-        document.body.style.color = "#fff";
-      }
+    function updateText(command) {
+      alert("Send this to ESP32: " + command);
+      // You can expand this later to write to GitHub, Firebase, etc.
     }
   </script>
 </body>
