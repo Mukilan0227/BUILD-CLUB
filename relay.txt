@@ -1,4 +1,4 @@
-light_off
+light_on
 fan=off
 motor=off
 tv=off
