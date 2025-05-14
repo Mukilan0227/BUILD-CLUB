@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Relay Control</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background-color: #121212;
+      color: white;
+      margin: 0;
+      padding: 2em;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1em;
+      max-width: 600px;
+      margin: auto;
+    }
+    button {
+      width: 100%;
+      padding: 1em;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .on { background-color: #00e676; color: #000; }
+    .off { background-color: #ff1744; color: #fff; }
+    .dark-toggle {
+      margin-top: 1em;
+      padding: 0.5em;
+      background: #333;
+      color: white;
+      border: 1px solid white;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h2>ESP32 IoT + IR Remote Control</h2>
+  <div class="container">
+    <div>
+      <button class="on" onclick="update('light','on')">Light ON</button>
+      <button class="off" onclick="update('light','off')">Light OFF</button>
+    </div>
+    <div>
+      <button class="on" onclick="update('fan','on')">Fan ON</button>
+      <button class="off" onclick="update('fan','off')">Fan OFF</button>
+    </div>
+    <div>
+      <button class="on" onclick="update('motor','on')">Motor ON</button>
+      <button class="off" onclick="update('motor','off')">Motor OFF</button>
+    </div>
+    <div>
+      <button class="on" onclick="update('tv','on')">TV ON</button>
+      <button class="off" onclick="update('tv','off')">TV OFF</button>
+    </div>
+  </div>
+
+  <button class="dark-toggle" onclick="toggleTheme()">Toggle Dark Mode</button>
+
+  <script>
+    const repo = "mukilan0227/RSA";
+    const file = "relay.txt";
+
+    function update(device, state) {
+      fetch(`https://api.github.com/repos/${repo}/contents/${file}`, {
+        headers: {
+          Accept: "application/vnd.github.v3+json"
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        const content = atob(data.content);
+        const lines = content.split("\n").map(line => {
+          if (line.startsWith(device + "=")) return `${device}=${state}`;
+          return line;
+        });
+        const updated = btoa(lines.join("\n"));
+
+        fetch(`https://api.github.com/repos/${repo}/contents/${file}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "token YOUR_GITHUB_TOKEN"
+          },
+          body: JSON.stringify({
+            message: `Update ${device} to ${state}`,
+            content: updated,
+            sha: data.sha
+          })
+        }).then(() => alert(`${device} turned ${state.toUpperCase()}`));
+      });
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("light");
+      if (document.body.classList.contains("light")) {
+        document.body.style.backgroundColor = "#fff";
+        document.body.style.color = "#000";
+      } else {
+        document.body.style.backgroundColor = "#121212";
+        document.body.style.color = "#fff";
+      }
+    }
+  </script>
+</body>
+</html>
