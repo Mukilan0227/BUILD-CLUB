@@ -1,0 +1,4 @@
+light=on
+fan=off
+motor=off
+tv=off
