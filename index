@@ -1,69 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Relay Control Panel</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #121212;
-      color: #fff;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      margin-bottom: 20px;
-    }
-    .device {
-      margin: 20px 0;
-    }
-    .btn {
-      padding: 12px 20px;
-      margin: 10px;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .on { background-color: #4CAF50; color: white; }
-    .off { background-color: #f44336; color: white; }
-    .btn:hover { transform: scale(1.05); }
-  </style>
+  <title>Relay Control</title>
 </head>
 <body>
-  <h1>ESP32 Internet Relay Control</h1>
-
-  <div class="device">
-    <h3>LIGHT</h3>
-    <button class="btn on" onclick="updateText('LIGHT=ON')">ON</button>
-    <button class="btn off" onclick="updateText('LIGHT=OFF')">OFF</button>
-  </div>
-
-  <div class="device">
-    <h3>FAN</h3>
-    <button class="btn on" onclick="updateText('FAN=ON')">ON</button>
-    <button class="btn off" onclick="updateText('FAN=OFF')">OFF</button>
-  </div>
-
-  <div class="device">
-    <h3>MOTOR</h3>
-    <button class="btn on" onclick="updateText('MOTOR=ON')">ON</button>
-    <button class="btn off" onclick="updateText('MOTOR=OFF')">OFF</button>
-  </div>
-
-  <div class="device">
-    <h3>TV</h3>
-    <button class="btn on" onclick="updateText('TV=ON')">ON</button>
-    <button class="btn off" onclick="updateText('TV=OFF')">OFF</button>
-  </div>
-
-  <script>
-    function updateText(command) {
-      alert("Send this to ESP32: " + command);
-      // You can expand this later to write to GitHub, Firebase, etc.
-    }
-  </script>
+  <h1>ESP32 Relay Control</h1>
+  <button onclick="fetch('http://192.168.1.100/on')">Turn ON</button>
+  <button onclick="fetch('http://192.168.1.100/off')">Turn OFF</button>
 </body>
 </html>
